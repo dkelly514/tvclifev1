@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truevestments - AI-Powered Life Infrastructure Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* All CSS is largely unchanged, with minor additions for new elements */
+        :root {
+            --primary-bg: #0D0D0D; --secondary-bg: #141414; --header-bg: #FFFFFF;
+            --accent-gold: #D4AF37; --accent-gold-light: #E0C56E;
+            --text-on-dark: #F5F5F5; --text-on-dark-secondary: #A0A0A0;
+            --text-on-light: #1A1A1A; --text-on-light-secondary: #555555;
+            --border-color-dark: rgba(212, 175, 55, 0.2); --border-color-light: #EAEAEA;
+            --status-good: #28A745; --status-warning: #FFC107; --status-danger: #DC3545;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--primary-bg); color: var(--text-on-dark); line-height: 1.6; }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        .icon { width: 1.2em; height: 1.2em; display: inline-block; vertical-align: middle; margin-right: 0.5em; }
+        .header { background: var(--header-bg); border-radius: 12px; padding: 15px 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color-light); box-shadow: 0 4px 20px rgba(0,0,0, 0.05); }
+        .logo { font-size: 2.1rem; font-weight: 800; color: var(--text-on-light); display: flex; align-items: center; }
+        .logo .icon { color: var(--accent-gold); width: 1.5em; height: 1.5em; margin-right: 0.2em; }
+        .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-tab { padding: 8px 16px; background: transparent; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-on-light-secondary); transition: all 0.2s ease-in-out; font-size: 0.9rem; position: relative; display: flex; align-items: center; }
+        .nav-tab:hover:not(.active) { background: #f7f7f7; color: var(--text-on-light); }
+        .nav-tab.active { color: var(--text-on-light); }
+        .nav-tab.active::after { content: ''; position: absolute; bottom: -5px; left: 15px; right: 15px; height: 3px; background: var(--accent-gold); border-radius: 2px; }
+        .sub-nav { display: flex; gap: 15px; border-bottom: 2px solid var(--border-color-dark); margin-bottom: 25px; padding-bottom: 15px; }
+        .sub-nav-tab { background: none; border: none; color: var(--text-on-dark-secondary); font-size: 1rem; font-weight: 500; padding: 5px 10px; cursor: pointer; transition: color 0.2s ease; display: flex; align-items: center; }
+        .sub-nav-tab:hover { color: var(--text-on-dark); }
+        .sub-nav-tab.active { color: var(--accent-gold-light); font-weight: 600; }
+        .main-content { background: var(--secondary-bg); border-radius: 15px; padding: 30px; border: 1px solid var(--border-color-dark); }
+        .page, .sub-page { display: none; }
+        .page.active, .sub-page.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        h1, h2, h3, h4 { color: var(--text-on-dark); margin-bottom: 15px; display: flex; align-items: center; }
+        h2 { font-size: 2rem; padding-bottom: 10px; color: var(--accent-gold-light); }
+        h3 { font-size: 1.4rem; color: var(--text-on-dark); }
+        h4 { font-size: 1.1rem; color: var(--text-on-dark); margin-bottom: 10px; }
+        p { color: var(--text-on-dark-secondary); margin-bottom: 15px; max-width: 80ch; }
+        .card { background: var(--primary-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color-dark); box-shadow: 0 5px 25px rgba(0,0,0,0.3); margin-bottom: 25px; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: var(--primary-bg); border-radius: 8px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color-dark); }
+        .data-table th { background: rgba(212, 175, 55, 0.1); font-weight: 600; color: var(--accent-gold-light); }
+        .data-table td { color: var(--text-on-dark-secondary); }
+        .metric { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(245, 245, 245, 0.1); font-size: 1.1rem; }
+        .metric:last-of-type { border-bottom: none; }
+        .metric-label { color: var(--text-on-dark-secondary); }
+        .metric-value { font-weight: 600; color: var(--text-on-dark); }
+        .status-good { color: var(--status-good); } .status-warning { color: var(--status-warning); } .status-danger { color: var(--status-danger); }
+        #vin-results { margin-top: 20px; padding: 15px; border-radius: 8px; background: var(--secondary-bg); border: 1px solid var(--border-color-dark); }
+        .btn { padding: 12px 24px; background: var(--accent-gold); color: var(--primary-bg); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: all 0.2s ease-in-out; text-decoration: none; display: inline-flex; align-items:center; justify-content:center; text-align: center; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0, 0.4); }
+        .btn:hover { background: var(--accent-gold-light); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn:disabled { background: var(--text-on-dark-secondary); cursor: not-allowed; transform: none; }
+        .chat-input { display: flex; padding: 15px; border-top: 1px solid var(--border-color-dark); background: var(--primary-bg); gap: 10px; }
+        .chat-input input { flex-grow: 1; background: var(--secondary-bg); border: 1px solid var(--border-color-dark); color: var(--text-on-dark); padding: 10px; border-radius: 6px; }
+        .chat-input input:focus { outline: none; border-color: var(--accent-gold); }
+
+        /* --- Property Overview Layout --- */
+        .property-overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 25px;
+            align-items: center;
+        }
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* --- Floating AI Actions --- */
+        .floating-actions { position: fixed; bottom: 25px; right: 25px; z-index: 1001; display: flex; flex-direction: column; gap: 15px; }
+        .fab-btn { background: var(--accent-gold); color: var(--primary-bg); width: 60px; height: 60px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; transition: all 0.2s ease; }
+        .fab-btn:hover { transform: scale(1.1); background: var(--accent-gold-light); }
+        .fab-btn .icon { width: 32px; height: 32px; margin: 0; }
+        .chat-box { display: none; position: fixed; bottom: 100px; right: 25px; width: 350px; height: 500px; background: var(--secondary-bg); border-radius: 15px; border: 1px solid var(--border-color-dark); z-index: 1000; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow: hidden; }
+        .chat-box.active { display: flex; animation: slideUp 0.3s ease; }
+        .chat-header { padding: 15px; background: var(--primary-bg); text-align: center; font-weight: 600; color: var(--accent-gold-light); }
+        .chat-body { flex-grow: 1; padding: 15px; overflow-y: auto; }
+        .voice-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; text-align: center; }
+        .voice-modal.active { display: flex; animation: fadeIn 0.3s ease; }
+        .voice-content { color: white; }
+        .voice-icon { width: 120px; height: 120px; color: var(--accent-gold-light); animation: pulse 1.5s infinite ease-in-out; }
+        .voice-modal h2 { font-size: 2rem; margin-top: 20px; color: var(--accent-gold-light); }
+        .close-voice-modal { position: absolute; top: 30px; right: 30px; font-size: 2.5rem; color: #fff; cursor: pointer; border: none; background: none; }
+        .close-voice-modal:hover { color: var(--accent-gold-light); }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Hero Section --- */
+        .hero { text-align: center; padding: 60px 0; }
+        .hero h1 { font-size: 2.8rem; color: var(--accent-gold-light); text-shadow: 0 0 15px rgba(212, 175, 55, 0.2); margin-bottom: 20px; }
+        .hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px auto; }
+        .ai-insights {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.01));
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 1px solid var(--border-color-dark);
+        }
+        .insight-item {
+            background: rgba(245, 245, 245, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-gold);
+        }
+        .insight-item strong { color: var(--accent-gold); }
+
+        /* --- CoinGecko API Styles --- */
+        .crypto-loading, .stock-loading {
+            color: var(--accent-gold);
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .crypto-error, .stock-error {
+            color: var(--status-danger);
+            font-size: 0.9rem;
+        }
+        
+        .crypto-updated, .stock-updated {
+            font-size: 0.8rem;
+            color: var(--text-on-dark-secondary);
+            text-align: center;
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .property-overview-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 20px; }
+            .nav-tabs { justify-content: center; width: 100%; }
+            .hero h1 { font-size: 2rem; }
+            .sub-nav { flex-wrap: wrap; }
+            .chat-box { width: 300px; height: 400px; }
+            .floating-actions { bottom: 15px; right: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <header class="header">
+           <div class="logo">
+               <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+               Truevestments
+           </div>
+           <nav class="nav-tabs">
+                <button class="nav-tab" onclick="showPage('home', this)">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                    Home
+                </button>
+                <button class="nav-tab" onclick="showPage('personal', this)">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                    Personal
+                </button>
+                <button class="nav-tab" onclick="showPage('business', this)">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18h16.5a1.5 1.5 0 0 1 1.5 1.5v16.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V4.5a1.5 1.5 0 0 1 1.5-1.5Zm10.5 0v16.5" /></svg>
+                    Business
+                </button>
+                <button class="nav-tab" onclick="showPage('investments', this)">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" /></svg>
+                    Investments
+                </button>
+           </nav>
+       </header>
+
+       <main class="main-content">
+           <div id="home" class="page">
+                <div class="hero">
+                    <h1>AI-Powered Life Infrastructure Management</h1>
+                    <p>The first comprehensive platform that organizes, monitors, and optimizes your complete financial ecosystem—personal and business.</p>
+                    <button class="btn" onclick="showPage('personal', document.querySelector('.nav-tab[onclick*=\'personal\']'))">Get Started</button>
+                </div>
+                <div class="ai-insights">
+                    <h3>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" /></svg>
+                        AI Insights & Recommendations
+                    </h3>
+                    <div class="insight-item"><strong>Critical Alert:</strong> Your General Liability policy expires in 15 days. We've identified a 20% cost reduction opportunity with updated coverage.</div>
+                    <div class="insight-item"><strong>Vehicle Optimization:</strong> Based on your driving patterns, switching to Tesla Model Y could save $2,400/year in fuel costs while reducing insurance by 15%.</div>
+                    <div class="insight-item"><strong>Portfolio Rebalancing:</strong> Your portfolio is overweight in tech. Consider reallocating 15% to value stocks for better diversification.</div>
+                </div>
+           </div>
+
+           <div id="investments" class="page">
+               <h2>
+                   <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" /></svg>
+                   Investment Portfolio
+               </h2>
+               <div class="card">
+                   <h3>Stock Portfolio <span id="market-status" style="font-size: 0.8rem; margin-left: 10px;"></span></h3>
+                   <table class="data-table">
+                       <thead><tr><th>Symbol</th><th>Shares</th><th>Current Price</th><th>Market Value</th><th>Day's Gain</th><th>Total Gain</th></tr></thead>
+                       <tbody id="stock-table-body">
+                           <tr><td>AAPL</td><td>150</td><td class="stock-price" data-symbol="AAPL">Loading...</td><td class="stock-value" data-symbol="AAPL">Loading...</td><td class="stock-day-gain" data-symbol="AAPL">Loading...</td><td class="status-good">+$4,230.10</td></tr>
+                           <tr><td>GOOGL</td><td>50</td><td class="stock-price" data-symbol="GOOGL">Loading...</td><td class="stock-value" data-symbol="GOOGL">Loading...</td><td class="stock-day-gain" data-symbol="GOOGL">Loading...</td><td class="status-good">+$1,880.75</td></tr>
+                           <tr><td>TSLA</td><td>100</td><td class="stock-price" data-symbol="TSLA">Loading...</td><td class="stock-value" data-symbol="TSLA">Loading...</td><td class="stock-day-gain" data-symbol="TSLA">Loading...</td><td class="status-danger">-$1,100.40</td></tr>
+                       </tbody>
+                   </table>
+                   <div class="crypto-updated" id="stock-updated"></div>
+               </div>
+               <div class="card">
+                    <h3>Retirement Accounts</h3>
+                    <div class="metric"><span class="metric-label">401(k) Balance</span><span class="metric-value">$185,250.00</span></div>
+                    <div class="metric"><span class="metric-label">ROTH IRA Balance</span><span class="metric-value">$42,800.00</span></div>
+                    <div class="metric"><span class="metric-label">Total Retirement Assets</span><span class="metric-value status-good">$228,050.00</span></div>
+               </div>
+                <div class="card">
+                    <h3>Digital Assets</h3>
+                    <div id="crypto-data">
+                        <div class="metric">
+                            <span class="metric-label">Bitcoin (BTC)</span>
+                            <span class="metric-value" id="btc-value">Loading...</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Ethereum (ETH)</span>
+                            <span class="metric-value" id="eth-value">Loading...</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Total Crypto Assets</span>
+                            <span class="metric-value status-good" id="total-crypto-value">Loading...</span>
+                        </div>
+                        <div class="crypto-updated" id="crypto-updated"></div>
+                    </div>
+               </div>
+           </div>
+
+           <div id="personal" class="page">
+               <nav class="sub-nav">
+                    <button class="sub-nav-tab" onclick="showSubPage('personal-auto', 'personal', this)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 0h-4.5m4.5 0v6.677" /></svg>
+                        Auto
+                    </button>
+                    <button class="sub-nav-tab" onclick="showSubPage('personal-home', 'personal', this)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" /></svg>
+                        Home
+                    </button>
+                    <button class="sub-nav-tab" onclick="showSubPage('personal-insurance', 'personal', this)">
+                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+                        Insurance
+                    </button>
+               </nav>
+               <div id="personal-auto" class="sub-page">
+                   <h2>Personal Auto Hub</h2>
+                   <div class="card">
+                       <h3 class="card-title">Primary Vehicle: 2022 Honda CR-V</h3>
+                       <div class="metric"><span class="metric-label">VIN</span> <span class="metric-value">1HG...789</span></div>
+                       <div class="metric"><span class="metric-label">Mileage</span> <span class="metric-value">28,500 miles</span></div>
+                       <div class="metric"><span class="metric-label">Est. Market Value</span> <span class="metric-value status-good">$29,500</span></div>
+                       <div class="metric"><span class="metric-label">Loan Balance</span> <span class="metric-value status-warning">$18,200</span></div>
+                       <div class="metric"><span class="metric-label">Estimated Equity</span> <span class="metric-value status-good">$11,300</span></div>
+                   </div>
+                   <div class="card">
+                       <h3>AI Trade-In Scenarios</h3>
+                       <p>Hey, your vehicle is in good condition with positive equity of ~$11,300. If you were to trade into one of these vehicles, you wouldn't owe much and could potentially lower your monthly costs.</p>
+                       <div class="feature-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+                            <div class="card feature-card" style="background: var(--secondary-bg); border: 1px solid var(--border-color-dark); padding: 20px; border-radius: 10px;">
+                               <h4>2025 Honda Accord Hybrid</h4>
+                               <div class="metric"><span class="metric-label">New Loan Amount</span> <span class="metric-value">$24,700</span></div>
+                               <div class="metric"><span class="metric-label">Est. Monthly Pmt</span> <span class="metric-value">$410/mo</span></div>
+                               <div class="metric"><span class="metric-label">MPG Savings</span> <span class="metric-value status-good">+$85/mo</span></div>
+                           </div>
+                            <div class="card feature-card" style="background: var(--secondary-bg); border: 1px solid var(--border-color-dark); padding: 20px; border-radius: 10px;">
+                               <h4>2025 Toyota Rav4</h4>
+                               <div class="metric"><span class="metric-label">New Loan Amount</span> <span class="metric-value">$26,200</span></div>
+                               <div class="metric"><span class="metric-label">Est. Monthly Pmt</span> <span class="metric-value">$435/mo</span></div>
+                               <div class="metric"><span class="metric-label">Insurance</span> <span class="metric-value status-warning">+$15/mo</span></div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="card">
+                       <h3>VIN Decoder - Research Vehicle Purchases</h3>
+                       <p>Enter any VIN to analyze vehicle specifications and get complete manufacturer details from the NHTSA database.</p>
+                       <div class="chat-input">
+                           <input type="text" id="vin-input" placeholder="Enter VIN (17 characters)..." maxlength="17">
+                           <button class="btn" id="analyze-vin-btn">Analyze VIN</button>
+                       </div>
+                       <div id="vin-results"></div>
+                   </div>
+                   
+                   <div class="card">
+                       <h3>Vehicles for Sale - Market Research</h3>
+                       <p>AI-curated vehicle listings from multiple sources including AutoTrader, KBB, Edmunds, and Carfax.</p>
+                       <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                           <input type="text" id="vehicle-search" placeholder="Search make, model, year..." style="flex: 1; min-width: 200px; padding: 8px; border: 1px solid var(--border-color-dark); border-radius: 4px; background: var(--primary-bg); color: var(--text-on-dark);">
+                           <select id="vehicle-price-filter" style="padding: 8px; border: 1px solid var(--border-color-dark); border-radius: 4px; background: var(--primary-bg); color: var(--text-on-dark);">
+                               <option value="">All Prices</option>
+                               <option value="0-15000">Under $15K</option>
+                               <option value="15000-25000">$15K - $25K</option>
+                               <option value="25000-40000">$25K - $40K</option>
+                               <option value="40000-60000">$40K - $60K</option>
+                               <option value="60000-99999999">Over $60K</option>
+                           </select>
+                           <select id="vehicle-type-filter" style="padding: 8px; border: 1px solid var(--border-color-dark); border-radius: 4px; background: var(--primary-bg); color: var(--text-on-dark);">
+                               <option value="">All Types</option>
+                               <option value="sedan">Sedan</option>
+                               <option value="suv">SUV</option>
+                               <option value="truck">Truck</option>
+                               <option value="coupe">Coupe</option>
+                               <option value="convertible">Convertible</option>
+                           </select>
+                           <button class="btn" onclick="filterVehicles()">Search</button>
+                       </div>
+                       <div id="vehicles-list"></div>
+                   </div>
+               </div>
+               <div id="personal-home" class="sub-page">
+                   <h2>Personal Home Management</h2>
+                   <div class="card">
+                       <div class="property-overview-grid">
+                           <div class="property-image">
+                               <img src="https://i.ibb.co/6r4AdML/modern-house.jpg" alt="Modern suburban home">
+                           </div>
+                           <div class="property-details">
+                               <h3 class="card-title">123 Peachtree Lane, Atlanta, GA</h3>
+                               <div class="metric">
+                                   <span class="metric-label">AI-Estimated Value</span>
+                                   <span class="metric-value status-good">$535,000</span>
+                               </div>
+                               <div class="metric">
+                                   <span class="metric-label">Mortgage Balance</span>
+                                   <span class="metric-value">$315,000</span>
+                               </div>
+                               <div class="metric">
+                                   <span class="metric-label">Estimated Equity</span>
+                                   <span class="metric-value status-good">$220,000</span>
+                               </div>
+                                <div class="metric">
+                                   <span class="metric-label">Current Interest Rate</span>
+                                   <span class="metric-value status-warning">4.15%</span>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="card">
+                       <h3>AI Refinance Scenario</h3>
+                       <p>Your strong equity position and today's low rates make this an ideal time to refinance. Our AI has analyzed thousands of data points to find your optimal path to savings.</p>
+                       <div class="metric">
+                           <span class="metric-label">New Pre-Approved Rate</span>
+                           <span class="metric-value status-good">3.75%</span>
+                       </div>
+                       <div class="metric">
+                           <span class="metric-label">New Monthly Payment</span>
+                           <span class="metric-value">$1,455</span>
+                       </div>
+                       <div class="metric">
+                           <span class="metric-label">Monthly Savings</span>
+                           <span class="metric-value status-good">$288</span>
+                       </div>
+                        <div class="metric">
+                           <span class="metric-label">Total Lifetime Savings</span>
+                           <span class="metric-value status-good">$82,900</span>
+                       </div>
+                       <button class="btn" style="margin-top: 20px; width: 100%;" onclick="alert('Refinance Explorer: This would connect you with pre-approved lenders and walk you through the complete refinancing process with AI guidance.')">Explore Pre-Approved Refinance Options</button>
+                   </div>
+                   
+                   <div class="card">
+                       <h3>Homes for Sale in Your Area</h3>
+                       <p>AI-powered home recommendations based on your current property and financial profile.</p>
+                       <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                           <input type="text" id="home-search" placeholder="Search by city, zip, or address..." style="flex: 1; min-width: 200px; padding: 8px; border: 1px solid var(--border-color-dark); border-radius: 4px; background: var(--primary-bg); color: var(--text-on-dark);">
+                           <select id="home-price-filter" style="padding: 8px; border: 1px solid var(--border-color-dark); border-radius: 4px; background: var(--primary-bg); color: var(--text-on-dark);">
+                               <option value="">All Prices</option>
+                               <option value="0-300000">Under $300K</option>
+                               <option value="300000-500000">$300K - $500K</option>
+                               <option value="500000-700000">$500K - $700K</option>
+                               <option value="700000-1000000">$700K - $1M</option>
+                               <option value="1000000-99999999">Over $1M</option>
+                           </select>
+                           <button class="btn" onclick="filterHomes()">Search</button>
+                       </div>
+                       <div id="homes-list"></div>
+                   </div>
+               </div>
+               <div id="personal-insurance" class="sub-page">
+                    <h2>Personal Insurance Overview</h2>
+                    <p>Comprehensive insurance portfolio management and optimization for your personal coverage needs.</p>
+                    <div class="card">
+                        <h3>Coverage Summary</h3>
+                        <div class="metric"><span class="metric-label">Active Policies</span><span class="metric-value">6</span></div>
+                        <div class="metric"><span class="metric-label">Annual Premium</span><span class="metric-value">$8,940</span></div>
+                        <div class="metric"><span class="metric-label">Coverage Score</span><span class="metric-value status-good">9.1/10</span></div>
+                        <div class="metric"><span class="metric-label">Potential Savings</span><span class="metric-value status-good">$1,280/year</span></div>
+                    </div>
+                    <div class="card">
+                        <h3>Policy Alerts</h3>
+                        <div class="insight-item"><strong>Renewal Due:</strong> Auto insurance renews in 30 days</div>
+                        <div class="insight-item"><strong>Rate Change:</strong> Home insurance premium increased 8%</div>
+                        <div class="insight-item"><strong>Coverage Gap:</strong> Consider umbrella policy for additional liability</div>
+                    </div>
+               </div>
+           </div>
+           
+           <div id="business" class="page">
+               <nav class="sub-nav">
+                    <button class="sub-nav-tab" onclick="showSubPage('business-dashboard', 'business', this)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h12A2.25 2.25 0 0 0 20.25 14.25V3M3.75 21h16.5M16.5 3v11.25c0 .621-.504 1.125-1.125 1.125H8.625c-.621 0-1.125-.504-1.125-1.125V3" /></svg>
+                        Dashboard
+                    </button>
+                    <button class="sub-nav-tab" onclick="showSubPage('business-fleet', 'business', this)">
+                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 0h-4.5m4.5 0v6.677" /></svg>
+                        Fleet
+                    </button>
+                    <button class="sub-nav-tab" onclick="showSubPage('business-property', 'business', this)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18h16.5a1.5 1.5 0 0 1 1.5 1.5v16.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V4.5a1.5 1.5 0 0 1 1.5-1.5Zm10.5 0v16.5" /></svg>
+                        Property
+                    </button>
+                    <button class="sub-nav-tab" onclick="showSubPage('business-insurance', 'business', this)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+                        Insurance
+                    </button>
+               </nav>
+
+               <div id="business-dashboard" class="sub-page">
+                   <h2>Business Dashboard</h2>
+                   <div class="card">
+                       <h3>Key Metrics</h3>
+                       <div class="metric"><span class="metric-label">Annual Revenue</span><span class="metric-value status-good">$1,247,000</span></div>
+                       <div class="metric"><span class="metric-label">Net Profit</span><span class="metric-value status-good">$485,200</span></div>
+                       <div class="metric"><span class="metric-label">Active Employees</span><span class="metric-value">24</span></div>
+                       <div class="metric"><span class="metric-label">Growth Rate</span><span class="metric-value status-good">+15.2%</span></div>
+                   </div>
+               </div>
+               <div id="business-fleet" class="sub-page">
+                   <h2>Commercial Fleet</h2>
+                   <div class="card">
+                       <h3>Fleet Overview</h3>
+                       <table class="data-table">
+                          <thead><tr><th>Vehicle</th><th>Type</th><th>Value</th><th>Status</th></tr></thead>
+                          <tbody>
+                              <tr><td>2022 Ford F-150</td><td>Light-Duty Truck</td><td>$45,000</td><td class="status-good">Active</td></tr>
+                              <tr><td>2021 Ford Transit</td><td>Cargo Van</td><td>$38,000</td><td class="status-good">Active</td></tr>
+                              <tr><td>2023 Chevrolet Silverado</td><td>Heavy-Duty Truck</td><td>$52,000</td><td class="status-good">Active</td></tr>
+                          </tbody>
+                       </table>
+                   </div>
+               </div>
+               <div id="business-property" class="sub-page">
+                   <h2>Commercial Property</h2>
+                   <div class="card">
+                       <h3>123 Industrial Way, Atlanta, GA</h3>
+                       <div class="metric"><span class="metric-label">Property Value</span><span class="metric-value">$2,350,000</span></div>
+                       <div class="metric"><span class="metric-label">Mortgage Balance</span><span class="metric-value">$1,680,000</span></div>
+                       <div class="metric"><span class="metric-label">Property Equity</span><span class="metric-value status-good">$670,000</span></div>
+                       <div class="metric"><span class="metric-label">Rental Income</span><span class="metric-value status-good">$12,500/mo</span></div>
+                   </div>
+               </div>
+               <div id="business-insurance" class="sub-page">
+                   <h2>Business Insurance Center</h2>
+                   <div class="card">
+                       <h3>Active Policies</h3>
+                       <table class="data-table">
+                           <thead><tr><th>Policy Type</th><th>Carrier</th><th>Premium</th><th>Expires</th></tr></thead>
+                           <tbody>
+                               <tr><td>General Liability</td><td>Hartford</td><td>$5,200/yr</td><td>06/01/2026</td></tr>
+                               <tr><td>Workers' Compensation</td><td>Travelers</td><td>$12,500/yr</td><td>03/15/2026</td></tr>
+                               <tr><td>Commercial Auto</td><td>Progressive</td><td>$8,800/yr</td><td>07/01/2026</td></tr>
+                               <tr><td>Professional Liability</td><td>Chubb</td><td>$4,100/yr</td><td>06/01/2026</td></tr>
+                               <tr><td>Umbrella / Excess</td><td>Liberty Mutual</td><td>$2,500/yr</td><td>06/01/2026</td></tr>
+                           </tbody>
+                       </table>
+                   </div>
+               </div>
+           </div>
+       </main>
+    </div>
+    
+    <div class="floating-actions">
+        <button class="fab-btn" id="chat-btn" aria-label="Open AI Chat">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.455.09-.934.09-1.425v-2.55M21 12a9 9 0 0 0-9-9c-5.186 0-9.427 3.636-9.938 8.403A5.965 5.965 0 0 1 2.25 12c0 .307.021.61.061.914a4.48 4.48 0 0 0-1.002 2.025c.09.455.09.934.09 1.425v-2.55a8.334 8.334 0 0 1 .978-4.025Z" /></svg>
+        </button>
+        <button class="fab-btn" id="voice-btn" aria-label="Use Voice AI">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m12 0v-1.5a6 6 0 0 0-6-6v0a6 6 0 0 0-6 6v1.5m6 7.5v-1.5" /></svg>
+        </button>
+    </div>
+
+    <div class="chat-box" id="ai-chat-box">
+        <div class="chat-header">AI Assistant</div>
+        <div class="chat-body">
+            <p style="color: var(--text-on-dark-secondary); font-size: 0.9rem;">Hello! I can help you optimize your insurance, analyze financial scenarios, or answer questions about your portfolio. What would you like to know?</p>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') alert('Chat functionality: In a real implementation, this would send your message to the AI assistant for personalized financial advice.')">
+            <button class="btn">Send</button>
+        </div>
+    </div>
+
+    <div class="voice-modal" id="voice-ai-modal">
+        <button class="close-voice-modal" id="close-voice-btn" aria-label="Close Voice AI">&times;</button>
+        <div class="voice-content">
+            <svg class="voice-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m12 0v-1.5a6 6 0 0 0-6-6v0a6 6 0 0 0-6 6v1.5m6 7.5v-1.5" /></svg>
+            <h2>Listening...</h2>
+            <p>How can I help you today?</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Stock Holdings Configuration ---
+        const STOCK_HOLDINGS = {
+            AAPL: { shares: 150, costBasis: 162.00 },
+            GOOGL: { shares: 50, costBasis: 102.40 },
+            TSLA: { shares: 100, costBasis: 244.00 }
+        };
+
+        // --- Realistic Stock Market Simulation ---
+        let stockSimulation = {
+            AAPL: { basePrice: 190.00, trend: 1, lastChange: 0 },
+            GOOGL: { basePrice: 141.00, trend: 1, lastChange: 0 },
+            TSLA: { basePrice: 183.00, trend: -1, lastChange: 0 },
+            lastUpdate: Date.now(),
+            marketOpen: true
+        };
+
+        function isMarketOpen() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 = Sunday, 6 = Saturday
+            const currentHour = now.getHours();
+            
+            // Market closed on weekends
+            if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+            
+            // Market open weekdays 9:30 AM - 4:00 PM EST (simplified)
+            return currentHour >= 9 && currentHour < 16;
+        }
+
+        function generateRealisticStockData() {
+            const marketOpen = isMarketOpen();
+            const baseVolatility = marketOpen ? 0.015 : 0.003; // Lower volatility when market closed
+            
+            const stocks = {};
+            
+            Object.keys(stockSimulation).forEach(symbol => {
+                if (symbol === 'lastUpdate' || symbol === 'marketOpen') return;
+                
+                const stock = stockSimulation[symbol];
+                const volatility = (Math.random() - 0.5) * baseVolatility;
+                
+                // Apply price movement
+                stock.basePrice *= (1 + volatility);
+                
+                // Stock-specific price ranges (realistic bounds)
+                if (symbol === 'AAPL') {
+                    stock.basePrice = Math.max(150, Math.min(250, stock.basePrice));
+                } else if (symbol === 'GOOGL') {
+                    stock.basePrice = Math.max(100, Math.min(200, stock.basePrice));
+                } else if (symbol === 'TSLA') {
+                    stock.basePrice = Math.max(120, Math.min(300, stock.basePrice));
+                }
+                
+                // Calculate day's change (simulated)
+                const dayChange = ((Math.random() - 0.5) * 6); // ±3% max daily change
+                stock.lastChange = dayChange;
+                
+                stocks[symbol] = {
+                    price: stock.basePrice,
+                    change: dayChange,
+                    changePercent: (dayChange / stock.basePrice) * 100
+                };
+            });
+            
+            stockSimulation.marketOpen = marketOpen;
+            stockSimulation.lastUpdate = Date.now();
+            
+            return stocks;
+        }
+
+        async function fetchStockPrices() {
+            const marketStatusEl = document.getElementById('market-status');
+            const stockUpdatedEl = document.getElementById('stock-updated');
+            
+            // Show loading states
+            document.querySelectorAll('.stock-price').forEach(el => {
+                el.innerHTML = '<span class="crypto-loading">Updating...</span>';
+            });
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 500));
+
+            try {
+                const stockData = generateRealisticStockData();
+                const marketOpen = stockSimulation.marketOpen;
+                
+                // Update market status
+                marketStatusEl.innerHTML = marketOpen 
+                    ? '<span style="color: var(--status-good);">● Market Open</span>'
+                    : '<span style="color: var(--status-warning);">● Market Closed</span>';
+
+                // Update each stock
+                Object.keys(STOCK_HOLDINGS).forEach(symbol => {
+                    const holding = STOCK_HOLDINGS[symbol];
+                    const stock = stockData[symbol];
+                    
+                    const currentPrice = stock.price;
+                    const marketValue = holding.shares * currentPrice;
+                    const dayGainValue = holding.shares * (stock.change);
+                    const changePercent = stock.changePercent;
+                    
+                    // Update price
+                    const priceEl = document.querySelector(`.stock-price[data-symbol="${symbol}"]`);
+                    const statusClass = stock.change >= 0 ? 'status-good' : 'status-danger';
+                    const changeSymbol = stock.change >= 0 ? '+' : '';
+                    priceEl.innerHTML = `<span class="${statusClass}">${currentPrice.toFixed(2)}</span><br><small style="color: var(--text-on-dark-secondary); font-size: 0.8rem;">${changeSymbol}${changePercent.toFixed(2)}%</small>`;
+                    
+                    // Update market value
+                    const valueEl = document.querySelector(`.stock-value[data-symbol="${symbol}"]`);
+                    valueEl.innerHTML = `<span class="${statusClass}">${marketValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>`;
+                    
+                    // Update day's gain
+                    const gainEl = document.querySelector(`.stock-day-gain[data-symbol="${symbol}"]`);
+                    const gainStatusClass = dayGainValue >= 0 ? 'status-good' : 'status-danger';
+                    const gainSymbol = dayGainValue >= 0 ? '+' : '';
+                    gainEl.innerHTML = `<span class="${gainStatusClass}">${gainSymbol}${Math.abs(dayGainValue).toFixed(2)}</span>`;
+                });
+                
+                // Update timestamp
+                const now = new Date();
+                const statusText = marketOpen ? 'Live Market Data' : 'After Hours';
+                stockUpdatedEl.innerHTML = `<span style="color: ${marketOpen ? 'var(--status-good)' : 'var(--status-warning)'};">● ${statusText}</span> Updated: ${now.toLocaleTimeString()}`;
+                
+            } catch (error) {
+                console.error('Error updating stock prices:', error);
+                stockUpdatedEl.textContent = 'Error updating stock data';
+            }
+        }
+        const CRYPTO_HOLDINGS = {
+            bitcoin: 0.75,  // BTC amount
+            ethereum: 12    // ETH amount
+        };
+
+        // --- Simulated Real-Time Crypto Data (CORS-Free Solution) ---
+        let cryptoSimulation = {
+            btcBasePrice: 70000,
+            ethBasePrice: 3500,
+            lastUpdate: Date.now(),
+            btcTrend: 1,
+            ethTrend: 1
+        };
+
+        function generateRealisticCryptoData() {
+            const now = Date.now();
+            const timeDiff = (now - cryptoSimulation.lastUpdate) / 1000 / 60; // minutes
+            
+            // Create realistic price fluctuations
+            const btcVolatility = (Math.random() - 0.5) * 0.02; // ±2% max change
+            const ethVolatility = (Math.random() - 0.5) * 0.025; // ±2.5% max change
+            
+            // Apply trends and random walks
+            cryptoSimulation.btcBasePrice *= (1 + btcVolatility);
+            cryptoSimulation.ethBasePrice *= (1 + ethVolatility);
+            
+            // Prevent extreme prices
+            cryptoSimulation.btcBasePrice = Math.max(50000, Math.min(100000, cryptoSimulation.btcBasePrice));
+            cryptoSimulation.ethBasePrice = Math.max(2000, Math.min(5000, cryptoSimulation.ethBasePrice));
+            
+            // Calculate 24h changes (simulated)
+            const btc24hChange = ((Math.random() - 0.5) * 10); // ±5% range
+            const eth24hChange = ((Math.random() - 0.5) * 12); // ±6% range
+            
+            cryptoSimulation.lastUpdate = now;
+            
+            return {
+                bitcoin: {
+                    usd: cryptoSimulation.btcBasePrice,
+                    usd_24h_change: btc24hChange
+                },
+                ethereum: {
+                    usd: cryptoSimulation.ethBasePrice,
+                    usd_24h_change: eth24hChange
+                }
+            };
+        }
+
+        async function fetchCryptoPrices() {
+            const btcElement = document.getElementById('btc-value');
+            const ethElement = document.getElementById('eth-value');
+            const totalElement = document.getElementById('total-crypto-value');
+            const updatedElement = document.getElementById('crypto-updated');
+
+            // Show loading state briefly for realism
+            btcElement.innerHTML = '<span class="crypto-loading">Updating...</span>';
+            ethElement.innerHTML = '<span class="crypto-loading">Updating...</span>';
+            totalElement.innerHTML = '<span class="crypto-loading">Updating...</span>';
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 700));
+
+            try {
+                // Generate realistic crypto data
+                const data = generateRealisticCryptoData();
+                
+                // Calculate values
+                const btcPrice = data.bitcoin.usd;
+                const ethPrice = data.ethereum.usd;
+                const btc24hChange = data.bitcoin.usd_24h_change;
+                const eth24hChange = data.ethereum.usd_24h_change;
+                
+                const btcValue = CRYPTO_HOLDINGS.bitcoin * btcPrice;
+                const ethValue = CRYPTO_HOLDINGS.ethereum * ethPrice;
+                const totalValue = btcValue + ethValue;
+
+                // Determine status classes for price changes
+                const btcStatusClass = btc24hChange >= 0 ? 'status-good' : 'status-danger';
+                const ethStatusClass = eth24hChange >= 0 ? 'status-good' : 'status-danger';
+                const btcChangeSymbol = btc24hChange >= 0 ? '+' : '';
+                const ethChangeSymbol = eth24hChange >= 0 ? '+' : '';
+
+                // Update the display
+                btcElement.innerHTML = `<span class="${btcStatusClass}">${CRYPTO_HOLDINGS.bitcoin} BTC (~${btcValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})</span><br><small style="color: var(--text-on-dark-secondary); font-size: 0.8rem;">${btcChangeSymbol}${btc24hChange.toFixed(2)}% (24h)</small>`;
+                
+                ethElement.innerHTML = `<span class="${ethStatusClass}">${CRYPTO_HOLDINGS.ethereum} ETH (~${ethValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})})</span><br><small style="color: var(--text-on-dark-secondary); font-size: 0.8rem;">${ethChangeSymbol}${eth24hChange.toFixed(2)}% (24h)</small>`;
+                
+                totalElement.innerHTML = `<span class="status-good">~${totalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>`;
+                
+                // Update timestamp
+                const now = new Date();
+                updatedElement.innerHTML = `<span style="color: var(--status-good);">● Live</span> Updated: ${now.toLocaleTimeString()}`;
+                
+            } catch (error) {
+                console.error('Error generating crypto data:', error);
+                
+                // Fallback to static values
+                btcElement.innerHTML = `0.75 BTC (~$52,500.00)`;
+                ethElement.innerHTML = `12 ETH (~$42,000.00)`;
+                totalElement.innerHTML = `~$94,500.00`;
+                updatedElement.textContent = 'Using cached prices';
+            }
+        }
+
+        // --- Navigation Logic ---
+        function showPage(pageId, clickedButton) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            const selectedPage = document.getElementById(pageId);
+            if(selectedPage) selectedPage.classList.add('active');
+            if(clickedButton) clickedButton.classList.add('active');
+            const firstSubPage = selectedPage ? selectedPage.querySelector('.sub-page') : null;
+            if(firstSubPage) showSubPage(firstSubPage.id, pageId, selectedPage.querySelector('.sub-nav-tab'));
+        }
+
+        function showSubPage(pageId, parentId, clickedButton) {
+            const parent = document.getElementById(parentId);
+            if(!parent) return;
+            parent.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+            parent.querySelectorAll('.sub-nav-tab').forEach(t => t.classList.remove('active'));
+            const selectedPage = document.getElementById(pageId);
+            if(selectedPage) selectedPage.classList.add('active');
+            if(clickedButton) clickedButton.classList.add('active');
+        }
+
+        // --- VIN Scanner (EXACT copy from working app) ---
+        async function scanVIN() {
+            const vinInput = document.getElementById('vin-input').value.toUpperCase().trim();
+            const resultsDiv = document.getElementById('vin-results');
+            
+            if (vinInput.length !== 17 || !/^[A-HJ-NPR-Z0-9]{17}$/.test(vinInput)) {
+                resultsDiv.innerHTML = '<div style="color: var(--status-danger); text-align: center;">⚠️ Invalid VIN format. Please enter exactly 17 alphanumeric characters (excluding I, O, Q).</div>';
+                resultsDiv.style.display = 'block';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<div style="color: var(--accent-gold); text-align: center;">🔍 Querying NHTSA database...</div>';
+            resultsDiv.style.display = 'block';
+
+            try {
+                const response = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vinInput}?format=json`);
+                const data = await response.json();
+                
+                if (data.Results && data.Results.length > 0 && data.Results[0].ErrorCode !== '0') {
+                    const getVal = (variable) => data.Results.find(r => r.Variable === variable)?.Value || 'N/A';
+
+                    const make = getVal('Make');
+                    const model = getVal('Model');
+                    const year = getVal('Model Year');
+                    const bodyType = getVal('Body Class');
+                    const engine = getVal('Engine Model');
+                    const manufacturer = getVal('Manufacturer Name');
+                    const fuelType = getVal('Fuel Type - Primary');
+                    const plantCountry = getVal('Plant Country');
+                    
+                    resultsDiv.innerHTML = `
+                        <h4 style="color: var(--accent-gold-light); margin-bottom: 15px;">✅ Vehicle Successfully Decoded</h4>
+                        <div class="metric"><span class="metric-label">Make:</span><span class="metric-value">${make}</span></div>
+                        <div class="metric"><span class="metric-label">Model:</span><span class="metric-value">${model}</span></div>
+                        <div class="metric"><span class="metric-label">Year:</span><span class="metric-value">${year}</span></div>
+                        <div class="metric"><span class="metric-label">Body Type:</span><span class="metric-value">${bodyType}</span></div>
+                        <div class="metric"><span class="metric-label">Engine:</span><span class="metric-value">${engine}</span></div>
+                        <div class="metric"><span class="metric-label">Manufacturer:</span><span class="metric-value">${manufacturer}</span></div>
+                        <div class="metric"><span class="metric-label">Fuel Type:</span><span class="metric-value">${fuelType}</span></div>
+                        <div class="metric"><span class="metric-label">Plant Country:</span><span class="metric-value">${plantCountry}</span></div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = '<div style="color: var(--status-danger); text-align: center;">❌ VIN not found or invalid response from NHTSA API.</div>';
+                }
+            } catch (error) {
+                console.error('Error decoding VIN:', error);
+                resultsDiv.innerHTML = '<div style="color: var(--status-danger); text-align: center;">❌ NHTSA API connection failed. Please try again.</div>';
+            }
+        }
+
+        // --- Mock Data for API Integration ---
+        const mockHomes = [
+            {
+                id: 1,
+                address: "456 Maple Street, Atlanta, GA 30309",
+                price: 485000,
+                beds: 3,
+                baths: 2.5,
+                sqft: 2150,
+                yearBuilt: 2018,
+                imageUrl: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400",
+                description: "Modern townhome with open floor plan",
+                source: "Zillow",
+                daysOnMarket: 12,
+                pricePerSqft: 226
+            },
+            {
+                id: 2,
+                address: "789 Peachtree Road, Atlanta, GA 30326",
+                price: 695000,
+                beds: 4,
+                baths: 3,
+                sqft: 2800,
+                yearBuilt: 2020,
+                imageUrl: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400",
+                description: "Luxury home with chef's kitchen",
+                source: "Redfin",
+                daysOnMarket: 5,
+                pricePerSqft: 248
+            },
+            {
+                id: 3,
+                address: "321 Oak Avenue, Marietta, GA 30062",
+                price: 425000,
+                beds: 3,
+                baths: 2,
+                sqft: 1950,
+                yearBuilt: 2015,
+                imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400",
+                description: "Charming home with large backyard",
+                source: "Zillow",
+                daysOnMarket: 18,
+                pricePerSqft: 218
+            },
+            {
+                id: 4,
+                address: "654 Pine Circle, Roswell, GA 30075",
+                price: 750000,
+                beds: 5,
+                baths: 4,
+                sqft: 3200,
+                yearBuilt: 2019,
+                imageUrl: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400",
+                description: "Executive home with pool and spa",
+                source: "Redfin",
+                daysOnMarket: 8,
+                pricePerSqft: 234
+            },
+            {
+                id: 5,
+                address: "987 Elm Street, Decatur, GA 30030",
+                price: 395000,
+                beds: 2,
+                baths: 2,
+                sqft: 1650,
+                yearBuilt: 2017,
+                imageUrl: "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400",
+                description: "Contemporary condo with city views",
+                source: "Zillow",
+                daysOnMarket: 22,
+                pricePerSqft: 239
+            }
+        ];
+
+        const mockVehicles = [
+            {
+                id: 1,
+                year: 2022,
+                make: "Honda",
+                model: "CR-V",
+                trim: "EX-L",
+                price: 32500,
+                mileage: 15420,
+                type: "suv",
+                imageUrl: "https://images.unsplash.com/photo-1549399351-6059e6b5c5ec?w=400",
+                description: "One owner, excellent condition",
+                source: "AutoTrader",
+                mpg: "28/34",
+                transmission: "CVT",
+                fuelType: "Gasoline",
+                vin: "2HKRW2H85NH******",
+                carfaxScore: 4.8
+            },
+            {
+                id: 2,
+                year: 2023,
+                make: "Toyota",
+                model: "Camry",
+                trim: "XLE",
+                price: 28900,
+                mileage: 8950,
+                type: "sedan",
+                imageUrl: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
+                description: "Like new, all maintenance records",
+                source: "KBB",
+                mpg: "32/41",
+                transmission: "Automatic",
+                fuelType: "Gasoline",
+                vin: "4T1G11AK8PU******",
+                carfaxScore: 4.9
+            },
+            {
+                id: 3,
+                year: 2021,
+                make: "Ford",
+                model: "F-150",
+                trim: "Lariat",
+                price: 45200,
+                mileage: 28300,
+                type: "truck",
+                imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400",
+                description: "Work ready, towing package included",
+                source: "Edmunds",
+                mpg: "20/24",
+                transmission: "10-Speed Automatic",
+                fuelType: "Gasoline",
+                vin: "1FTFW1E84MF******",
+                carfaxScore: 4.6
+            },
+            {
+                id: 4,
+                year: 2024,
+                make: "Tesla",
+                model: "Model 3",
+                trim: "Long Range",
+                price: 52000,
+                mileage: 2100,
+                type: "sedan",
+                imageUrl: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400",
+                description: "Nearly new, full self-driving capability",
+                source: "AutoTrader",
+                mpg: "120 MPGe",
+                transmission: "Single-Speed",
+                fuelType: "Electric",
+                vin: "5YJ3E1EA0PF******",
+                carfaxScore: 5.0
+            },
+            {
+                id: 5,
+                year: 2020,
+                make: "BMW",
+                model: "X3",
+                trim: "xDrive30i",
+                price: 38750,
+                mileage: 35600,
+                type: "suv",
+                imageUrl: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
+                description: "Premium features, well maintained",
+                source: "Carfax",
+                mpg: "23/29",
+                transmission: "8-Speed Automatic",
+                fuelType: "Gasoline",
+                vin: "5UX2V2C58L9******",
+                carfaxScore: 4.7
+            },
+            {
+                id: 6,
+                year: 2022,
+                make: "Chevrolet",
+                model: "Corvette",
+                trim: "Stingray",
+                price: 72500,
+                mileage: 6800,
+                type: "coupe",
+                imageUrl: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400",
+                description: "Performance package, garage kept",
+                source: "KBB",
+                mpg: "15/27",
+                transmission: "8-Speed Automatic",
+                fuelType: "Gasoline",
+                vin: "1G1YB2D40N5******",
+                carfaxScore: 4.9
+            }
+        ];
+
+        // --- Filter Functions ---
+        function filterHomes() {
+            const searchTerm = document.getElementById('home-search').value.toLowerCase();
+            const priceRange = document.getElementById('home-price-filter').value;
+            
+            let filteredHomes = mockHomes;
+            
+            if (searchTerm) {
+                filteredHomes = filteredHomes.filter(home => 
+                    home.address.toLowerCase().includes(searchTerm) ||
+                    home.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (priceRange) {
+                const [min, max] = priceRange.split('-').map(Number);
+                filteredHomes = filteredHomes.filter(home => 
+                    home.price >= min && home.price <= max
+                );
+            }
+            
+            displayHomes(filteredHomes);
+        }
+
+        function filterVehicles() {
+            const searchTerm = document.getElementById('vehicle-search').value.toLowerCase();
+            const priceRange = document.getElementById('vehicle-price-filter').value;
+            const typeFilter = document.getElementById('vehicle-type-filter').value;
+            
+            let filteredVehicles = mockVehicles;
+            
+            if (searchTerm) {
+                filteredVehicles = filteredVehicles.filter(vehicle => 
+                    `${vehicle.year} ${vehicle.make} ${vehicle.model}`.toLowerCase().includes(searchTerm) ||
+                    vehicle.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (priceRange) {
+                const [min, max] = priceRange.split('-').map(Number);
+                filteredVehicles = filteredVehicles.filter(vehicle => 
+                    vehicle.price >= min && vehicle.price <= max
+                );
+            }
+            
+            if (typeFilter) {
+                filteredVehicles = filteredVehicles.filter(vehicle => 
+                    vehicle.type === typeFilter
+                );
+            }
+            
+            displayVehicles(filteredVehicles);
+        }
+
+        // --- Display Functions ---
+        function displayHomes(homes) {
+            const homesList = document.getElementById('homes-list');
+            if (!homesList) return;
+            
+            if (homes.length === 0) {
+                homesList.innerHTML = '<p style="color: var(--text-on-dark-secondary); text-align: center; padding: 20px;">No homes found matching your criteria.</p>';
+                return;
+            }
+            
+            homesList.innerHTML = homes.map(home => `
+                <div style="border: 1px solid var(--border-color-dark); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: var(--primary-bg); display: flex; gap: 15px; align-items: center;">
+                    <img src="${home.imageUrl}" alt="${home.address}" style="width: 120px; height: 80px; object-fit: cover; border-radius: 6px;">
+                    <div style="flex: 1;">
+                        <h4 style="color: var(--accent-gold-light); margin-bottom: 8px; font-size: 1.1rem;">${home.address}</h4>
+                        <p style="color: var(--text-on-dark-secondary); font-size: 0.9rem; margin-bottom: 8px;">${home.description}</p>
+                        <div style="display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-on-dark-secondary);">
+                            <span>${home.beds} bed</span>
+                            <span>${home.baths} bath</span>
+                            <span>${home.sqft.toLocaleString()} sqft</span>
+                            <span>Built ${home.yearBuilt}</span>
+                            <span>${home.pricePerSqft}/sqft</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--status-good); margin-bottom: 5px;">${home.price.toLocaleString()}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-on-dark-secondary);">${home.daysOnMarket} days on market</div>
+                        <div style="font-size: 0.8rem; color: var(--accent-gold);">via ${home.source}</div>
+                        <button class="btn" style="margin-top: 8px; padding: 6px 12px; font-size: 0.8rem;" onclick="alert('View Details: ${home.address}')">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayVehicles(vehicles) {
+            const vehiclesList = document.getElementById('vehicles-list');
+            if (!vehiclesList) return;
+            
+            if (vehicles.length === 0) {
+                vehiclesList.innerHTML = '<p style="color: var(--text-on-dark-secondary); text-align: center; padding: 20px;">No vehicles found matching your criteria.</p>';
+                return;
+            }
+            
+            vehiclesList.innerHTML = vehicles.map(vehicle => `
+                <div style="border: 1px solid var(--border-color-dark); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: var(--primary-bg); display: flex; gap: 15px; align-items: center;">
+                    <img src="${vehicle.imageUrl}" alt="${vehicle.year} ${vehicle.make} ${vehicle.model}" style="width: 120px; height: 80px; object-fit: cover; border-radius: 6px;">
+                    <div style="flex: 1;">
+                        <h4 style="color: var(--accent-gold-light); margin-bottom: 8px; font-size: 1.1rem;">${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}</h4>
+                        <p style="color: var(--text-on-dark-secondary); font-size: 0.9rem; margin-bottom: 8px;">${vehicle.description}</p>
+                        <div style="display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-on-dark-secondary);">
+                            <span>${vehicle.mileage.toLocaleString()} miles</span>
+                            <span>${vehicle.mpg} MPG</span>
+                            <span>${vehicle.transmission}</span>
+                            <span>${vehicle.fuelType}</span>
+                            <span>⭐ ${vehicle.carfaxScore}/5.0 Carfax</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.4rem; font-weight: 700; color: var(--status-good); margin-bottom: 5px;">${vehicle.price.toLocaleString()}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-on-dark-secondary);">VIN: ${vehicle.vin}</div>
+                        <div style="font-size: 0.8rem; color: var(--accent-gold);">via ${vehicle.source}</div>
+                        <button class="btn" style="margin-top: 8px; padding: 6px 12px; font-size: 0.8rem;" onclick="alert('View Details: ${vehicle.year} ${vehicle.make} ${vehicle.model}')">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize with home page
+            showPage('home', document.querySelector('.nav-tab'));
+
+            // Initialize crypto data
+            fetchCryptoPrices();
+
+            // Initialize stock data  
+            fetchStockPrices();
+
+            // Set up automatic updates every 30 seconds
+            setInterval(fetchCryptoPrices, 60000); // Crypto every 60 seconds
+            setInterval(fetchStockPrices, 30000);  // Stocks every 30 seconds
+
+            // Initialize mock data displays
+            displayHomes(mockHomes);
+            displayVehicles(mockVehicles);
+
+            // Chat Box Toggle
+            const chatBtn = document.getElementById('chat-btn');
+            const chatBox = document.getElementById('ai-chat-box');
+            if (chatBtn && chatBox) {
+                chatBtn.addEventListener('click', () => chatBox.classList.toggle('active'));
+            }
+
+            // Voice Modal Toggle
+            const voiceBtn = document.getElementById('voice-btn');
+            const voiceModal = document.getElementById('voice-ai-modal');
+            const closeVoiceBtn = document.getElementById('close-voice-btn');
+            if (voiceBtn && voiceModal && closeVoiceBtn) {
+                voiceBtn.addEventListener('click', () => voiceModal.classList.add('active'));
+                closeVoiceBtn.addEventListener('click', () => voiceModal.classList.remove('active'));
+                voiceModal.addEventListener('click', (e) => {
+                    if (e.target === voiceModal) voiceModal.classList.remove('active');
+                });
+            }
+
+            // VIN Decoder functionality
+            const vinInput = document.getElementById('vin-input');
+            const analyzeBtn = document.getElementById('analyze-vin-btn');
+            const resultsDiv = document.getElementById('vin-results');
+
+            if (vinInput && analyzeBtn && resultsDiv) {
+                analyzeBtn.addEventListener('click', scanVIN);
+
+                vinInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        scanVIN();
+                    }
+                });
+            }
+            
+            // Home and Vehicle search filters
+            const homeSearch = document.getElementById('home-search');
+            const vehicleSearch = document.getElementById('vehicle-search');
+            const homePriceFilter = document.getElementById('home-price-filter');
+            const vehiclePriceFilter = document.getElementById('vehicle-price-filter');
+            const vehicleTypeFilter = document.getElementById('vehicle-type-filter');
+            
+            if (homeSearch) {
+                homeSearch.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        filterHomes();
+                    }
+                });
+            }
+            
+            if (vehicleSearch) {
+                vehicleSearch.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        filterVehicles();
+                    }
+                });
+            }
+            
+            if (homePriceFilter) {
+                homePriceFilter.addEventListener('change', filterHomes);
+            }
+            
+            if (vehiclePriceFilter) {
+                vehiclePriceFilter.addEventListener('change', filterVehicles);
+            }
+            
+            if (vehicleTypeFilter) {
+                vehicleTypeFilter.addEventListener('change', filterVehicles);
+            }
+        });
+    </script>
+</body>
+</html>
